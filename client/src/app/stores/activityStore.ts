@@ -7,10 +7,8 @@ configure({enforceActions: "always"});
 
 export class ActivityStore {
   @observable activityRegistry = new Map();
-  @observable activities: IActivity[] = [];
   @observable loadingInitial = false;
-  @observable selectedActivity: IActivity | undefined;
-  @observable editMode = false;
+  @observable activity: IActivity | null = null;
   @observable submitting = false;
   @observable target = '';
 
@@ -46,9 +44,34 @@ export class ActivityStore {
 
   }
 
+  @action loadActivity = async (id: string | undefined) =>{
+    let activity  = this.getActivity(id);
+
+    if(activity){
+      this.activity = activity;
+    }
+    else{
+      this.loadingInitial = true;
+      try {
+        activity = await agent.Activities.details(id);
+        this.activity = activity;
+      } catch (error) {
+        this.loadingInitial = false;
+        console.log(error)
+      }
+    }
+  }
+
+  getActivity = (id: string | undefined) => {
+    return this.activityRegistry.get(id);
+  }
+
+  @action clearActivity = () => {
+    this.activity = null
+  }
+
   @action selectActivity =  (id: string) => {
-    this.selectedActivity = this.activityRegistry.get(id);
-    this.editMode = false;
+    this.activity = this.activityRegistry.get(id);
   }
 
 
@@ -58,7 +81,7 @@ export class ActivityStore {
      try {
       await agent.Activities.create(activity);
       this.activityRegistry.set(activity.id, activity);
-      this.editMode = false;
+
       this.submitting = false;
 
      } catch (error) {
@@ -72,8 +95,8 @@ export class ActivityStore {
     try {
       agent.Activities.update(activity);
       this.activityRegistry.set(activity.id, activity);
-      this.selectedActivity = activity;
-      this.editMode = false;
+      this.activity = activity;
+
       this.submitting = false;
       
     } catch (error) {
@@ -95,24 +118,6 @@ export class ActivityStore {
       this.target = '';
       console.log(error);
     }
-  }
-
-  @action openCreateForm = () => {
-    this.editMode = true;
-    this.selectedActivity = undefined;
-  }
-
-  @action openUpdateForm = (id: string) => {
-    this.editMode = true;
-    this.selectedActivity = this.activityRegistry.get(id);
-  }
-
-  @action cancelSelectedActivity = () => {
-    this.selectedActivity = undefined;
-  }
-
-  @action cancleFormOpen = () => {
-    this.editMode = false;
   }
 }
 
