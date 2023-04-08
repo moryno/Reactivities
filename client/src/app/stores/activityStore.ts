@@ -57,7 +57,7 @@ export class ActivityStore {
         this.activity = activity;
       } catch (error) {
         this.loadingInitial = false;
-        console.log(error)
+        throw error;
       }
     }
   }

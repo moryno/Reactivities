@@ -8,6 +8,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from '../../features/home/HomePage';
 import ActivityForm from '../../features/activities/form/ActivityForm';
 import ActivityDetails from '../../features/activities/details/ActivityDetails';
+import NotFound from './NotFound';
 
 
 
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/activities/:id' element={<ActivityDetails />} />
         <Route path='/createActivities' element={<ActivityForm />} />
         <Route path="/manage/:id" element={<ActivityForm />} />
+        <Route path="/notfound"  element={<NotFound />} />
         </Routes>
       </Container>
     </Fragment>

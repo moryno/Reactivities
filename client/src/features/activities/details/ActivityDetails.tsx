@@ -16,10 +16,14 @@ const ActivityDetails:React.FC = () => {
   const {activity, loadActivity, loadingInitial} = activityStore;
 
   useEffect(() => {
-    loadActivity(id);
-  }, [loadActivity, id])
+    loadActivity(id).catch(() => {
+      navigate("/notfound");
+    });
+  }, [loadActivity, id, navigate])
 
-  if(loadingInitial || !activity) return <LoadingComponent content="Loading activity..." />
+  if(loadingInitial) return <LoadingComponent content="Loading activity..." />
+
+  if(!activity) return <h2>Not found</h2>
 
   return (
     <Card fluid>
