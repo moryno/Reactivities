@@ -49,12 +49,14 @@ export class ActivityStore {
 
     if(activity){
       this.activity = activity;
+      return activity;
     }
     else{
       this.loadingInitial = true;
       try {
         activity = await agent.Activities.details(id);
         this.activity = activity;
+        return activity;
       } catch (error) {
         this.loadingInitial = false;
         throw error;
@@ -85,8 +87,9 @@ export class ActivityStore {
       this.submitting = false;
 
      } catch (error) {
-      console.log(error);
-      this.submitting = false;
+       this.submitting = false;
+       
+       console.log(error);
      }
   }
 

@@ -12,7 +12,7 @@ const ActivityForm: React.FC = () => {
   const { id } = useParams();
   const navigate =  useNavigate();
   const activityStore = useContext(ActivityStore);
-  const {activity: initialActivity,createActivity, editActivity, submitting, loadActivity, clearActivity} = activityStore;
+  const {createActivity, editActivity, submitting, loadActivity} = activityStore;
 
  
     const [activity, setActivity] = useState<IActivity>({
@@ -26,13 +26,11 @@ const ActivityForm: React.FC = () => {
   });
 
   useEffect(()=>{
-    if(id && activity.id.length === 0){
-      loadActivity(id).then(() => initialActivity && setActivity(initialActivity));
+    if(id){
+      loadActivity(id).then((activity) => setActivity(activity));
     }
-    return () => {
-      clearActivity();
-    }
-  }, [initialActivity, id, loadActivity, clearActivity, activity.id.length])
+  
+  }, [ id, loadActivity])
 
 
     const handleActivityChange = (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
